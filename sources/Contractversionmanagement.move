@@ -58,3 +58,4 @@ module Gangotri_addr::ContractVersionManager {
     }
 
 }
+
