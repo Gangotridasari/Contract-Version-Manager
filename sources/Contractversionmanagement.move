@@ -3,24 +3,24 @@ module Gangotri_addr::ContractVersionManager {
     use std::string::{Self, String};
     use std::vector;
 
-    /// Struct representing a contract version registry
+   
     struct ContractRegistry has store, key {
-        current_version: String,     // Current active version
-        version_history: vector<String>, // List of all deployed versions
-        owner: address,              // Owner of the contract registry
-        is_active: bool,            // Whether the contract is active
+        current_version: String,    
+        version_history: vector<String>,
+        owner: address,              
+        is_active: bool,            
     }
 
-    /// Error codes
+  
     const E_NOT_OWNER: u64 = 1;
     const E_REGISTRY_NOT_EXISTS: u64 = 2;
     const E_INVALID_VERSION: u64 = 3;
 
-    /// Function to initialize a new contract version registry
+   
     public fun initialize_registry(owner: &signer, initial_version: String) {
         let owner_addr = signer::address_of(owner);
         
-        // Create initial version history with the first version
+       
         let initial_history = vector::empty<String>();
         vector::push_back(&mut initial_history, initial_version);
         
@@ -34,7 +34,7 @@ module Gangotri_addr::ContractVersionManager {
         move_to(owner, registry);
     }
 
-    /// Function to update contract to a new version
+  
     public fun update_version(
         owner: &signer, 
         registry_owner: address, 
@@ -42,19 +42,19 @@ module Gangotri_addr::ContractVersionManager {
     ) acquires ContractRegistry {
         let owner_addr = signer::address_of(owner);
         
-        // Ensure the registry exists
+       
         assert!(exists<ContractRegistry>(registry_owner), E_REGISTRY_NOT_EXISTS);
         
         let registry = borrow_global_mut<ContractRegistry>(registry_owner);
         
-        // Only the owner can update versions
+      
         assert!(registry.owner == owner_addr, E_NOT_OWNER);
-        
-        // Ensure version is not empty
+       
         assert!(!string::is_empty(&new_version), E_INVALID_VERSION);
         
-        // Update to new version
+       
         registry.current_version = new_version;
         vector::push_back(&mut registry.version_history, new_version);
     }
+
 }
